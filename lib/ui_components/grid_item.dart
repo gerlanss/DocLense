@@ -31,7 +31,7 @@ class _GridItemState extends State<GridItem> {
         children: <Widget>[
           Image.file(
             widget.item.imageUrl,
-            color: Colors.black.withOpacity(isSelected ? 0.9 : 0),
+            color: Colors.black.withAlpha(isSelected ? 230 : 0),
             colorBlendMode: BlendMode.color,
             fit: BoxFit.fill, //Determines the size ratio of the gridimage
             width: AppDimensions.width(50),

@@ -7,9 +7,9 @@ import 'package:doclense/ui_components/main_drawer.dart';
 import 'package:doclense/ui_components/double_back_to_close_snackbar.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+// import 'package:package_info_plus/package_info_plus.dart'; // Não mais necessário
 import 'package:provider/provider.dart';
-import 'package:wiredash/wiredash.dart';
+// import 'package:wiredash/wiredash.dart'; // Comentado temporariamente
 
 import '../../providers/theme_provider.dart';
 import 'setting_text.dart';
@@ -31,14 +31,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     var swithValue = themeChange.darkTheme;
 
     Future<void> userFeedback() async {
-      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      // Não precisamos mais recuperar informações do pacote
+      // final PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-      Wiredash.of(context)
-        ..setBuildProperties(
-          buildNumber: packageInfo.buildNumber,
-          buildVersion: packageInfo.version,
-        )
-        ..show();
+      // Funcionalidade temporariamente desativada
+      // Wiredash.of(context)
+      //   ..setBuildProperties(
+      //     buildNumber: packageInfo.buildNumber,
+      //     buildVersion: packageInfo.version,
+      //   )
+      //   ..show();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('Funcionalidade de feedback temporariamente indisponível'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
 
     return Scaffold(

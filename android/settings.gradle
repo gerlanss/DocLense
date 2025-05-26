@@ -1,11 +1,36 @@
-include ':app'
+pluginManagement {
+    def flutterSdkPath = System.getenv("FLUTTER_ROOT")
+    if (flutterSdkPath == null) {
+        def localProperties = new Properties()
+        def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withReader("UTF-8") { reader -> localProperties.load(reader) }
+            flutterSdkPath = localProperties.getProperty("flutter.sdk")
+        }
+    }
+    if (flutterSdkPath == null) {
+        throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    }
 
-def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
-def properties = new Properties()
+    // 👇 ISSO É ESSENCIAL pro `flutter run` funcionar
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle") {
+        name("flutter_tools")
+    }
 
-assert localPropertiesFile.exists()
-localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
-def flutterSdkPath = properties.getProperty("flutter.sdk")
-assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "DocLense"
+include ":app"

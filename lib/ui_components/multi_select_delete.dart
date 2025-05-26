@@ -9,7 +9,7 @@ import 'package:doclense/constants/route_constants.dart';
 import 'package:doclense/ui_components/grid_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../providers/image_list.dart';
@@ -177,10 +177,8 @@ class _MultiDeleteState extends State<MultiDelete> {
     XFile? picture = await picker.pickImage(source: ImageSource.camera);
     setState(() {
       if (picture != null) imageFile = File(picture.path);
-    });
-
-    if (imageFile != null) {
-      GallerySaver.saveImage(imageFile!.path)
+    });    if (imageFile != null) {
+      ImageGallerySaver.saveFile(imageFile!.path)
           .then((value) => print("Image Saved"));
       Navigator.of(context).pushNamed(
         RouteConstants.imageView,
@@ -236,16 +234,16 @@ class _MultiDeleteState extends State<MultiDelete> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (itemList!.isNotEmpty) {
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, bool? result) {
+        if (!didPop && itemList!.isNotEmpty) {
           setState(() {
             widget.imageList.imagelist.removeAt(itemList!.length - 1);
             widget.imageList.imagepath.removeAt(itemList!.length - 1);
             itemList!.removeAt(itemList!.length - 1);
           });
         }
-        return true;
       },
       child: Scaffold(
           // backgroundColor: Colors.blueGrey[100],

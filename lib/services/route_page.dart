@@ -14,31 +14,21 @@ import 'package:doclense/screens/starred_documents.dart';
 import 'package:flutter/material.dart';
 // import 'package:folder_picker/folder_picker.dart';
 import 'package:image/image.dart' as image_lib;
-import 'package:photofilters/photofilters.dart';
+import 'package:image_editor_plus/image_editor_plus.dart';
 
 Route generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case RouteConstants.homeScreen:
-      return pageBuilder(
-        screen: Home(),
-      );
+      return pageBuilder(screen: Home());
     case RouteConstants.settingsScreen:
-      return pageBuilder(
-        screen: SettingsScreen(),
-      );
+      return pageBuilder(screen: SettingsScreen());
     case RouteConstants.starredDocumentsScreen:
-      return pageBuilder(
-        screen: Starred(),
-      );
+      return pageBuilder(screen: Starred());
     case RouteConstants.aboutAppScreen:
-      return pageBuilder(
-        screen: About(),
-      );
+      return pageBuilder(screen: About());
     case RouteConstants.multiDelete:
       final args = settings.arguments as ImageList;
-      return pageBuilder(
-        screen: MultiDelete(args),
-      );
+      return pageBuilder(screen: MultiDelete(args));
 
     case RouteConstants.imageView:
       final args = settings.arguments as Map;
@@ -49,27 +39,24 @@ Route generateRoute(RouteSettings settings) {
         ),
       );
     case RouteConstants.contactDeveloperScreen:
-      return pageBuilder(
-        screen: ContactDeveloperScreen(),
-      );
+      return pageBuilder(screen: ContactDeveloperScreen());
     case RouteConstants.photoFilterSelector:
       final args = settings.arguments as Map<String, Object>;
       return pageBuilder(
-        screen: PhotoFilterSelector(
-          title: args['title'] as Widget,
-          filters: args['filters'] as List<Filter>,
-          image: args['image'] as image_lib.Image,
-          filename: args['fileName'] as String,
-          fit: args['fit'] as BoxFit,
-          appBarColor: args['appBarColor'] as Color,
-          loader: args['loader'] as Widget,
+        screen: Builder(
+          builder: (context) {
+            final imageFile = File(args['fileName'] as String);
+            return ImageEditor(
+              image: imageFile.readAsBytesSync(),
+              appBarColor: args['appBarColor'] as Color,
+              savePath: imageFile.path,
+            );
+          },
         ),
       );
     case RouteConstants.pdfConversionScreen:
       final args = settings.arguments as ImageList;
-      return pageBuilder(
-        screen: PDFConversion(args),
-      );
+      return pageBuilder(screen: PDFConversion(args));
     case RouteConstants.pdfPreviewScreen:
       final args = settings.arguments as Map<String, Object>;
       return pageBuilder(
@@ -97,12 +84,10 @@ Route generateRoute(RouteSettings settings) {
   }
 }
 
-PageRouteBuilder pageBuilder({
-  required Widget screen,
-}) {
+PageRouteBuilder pageBuilder({required Widget screen}) {
   return PageRouteBuilder(
     pageBuilder: (c, a1, a2) => screen,
-    transitionsBuilder: (c, anim, a2, child) =>
-        FadeTransition(opacity: anim, child: child),
+    transitionsBuilder:
+        (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
   );
 }

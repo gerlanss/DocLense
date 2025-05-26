@@ -266,7 +266,7 @@ class _ContactDeveloperScreenState extends State<ContactDeveloperScreen> {
   List<BoxShadow> get _buildBoxShadow => [
         BoxShadow(
           offset: const Offset(0.00, 3.00),
-          color: const Color(0xff000000).withOpacity(0.16),
+          color: const Color(0xff000000).withAlpha(41),
           blurRadius: 6,
         ),
       ];

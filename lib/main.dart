@@ -1,5 +1,5 @@
 import 'package:doclense/constants/theme_constants.dart';
-import 'package:doclense/env.dart';
+// import 'package:doclense/env.dart'; // Não mais necessário após remoção do Wiredash
 import 'package:doclense/screens/intro_screen.dart';
 import 'package:doclense/models/preferences.dart';
 import 'package:doclense/providers/theme_provider.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:provider/provider.dart';
-import 'package:wiredash/wiredash.dart';
+// import 'package:wiredash/wiredash.dart'; // Comentado temporariamente
 
 import 'configs/app.dart';
 
@@ -75,27 +75,18 @@ class _MyAppState extends State<MyApp> {
     }, child: Consumer<DarkThemeProvider>(
       builder: (BuildContext context, value, Widget? child) {
         return GestureDetector(
-          child: Wiredash(
-            theme: WiredashThemeData(
-              brightness: themeChangeProvider.darkTheme == true
-                  ? Brightness.dark
-                  : Brightness.light,
-            ),
-            projectId: Env.wiredashID,
-            secret: Env.wiredashSecret,
-            child: MaterialApp(
-              navigatorKey: _navigatorKey,
-              debugShowCheckedModeBanner: false,
-              theme: (themeChangeProvider.darkTheme == true)
-                  ? darkTheme
-                  : lightTheme,
-              home: IntoScreen(),
-              builder: (context, child) {
-                App.init(context);
-                return child ?? Scaffold();
-              },
-              onGenerateRoute: route_page.generateRoute,
-            ),
+          child: MaterialApp(
+            navigatorKey: _navigatorKey,
+            debugShowCheckedModeBanner: false,
+            theme: (themeChangeProvider.darkTheme == true)
+                ? darkTheme
+                : lightTheme,
+            home: IntoScreen(),
+            builder: (context, child) {
+              App.init(context);
+              return child ?? Scaffold();
+            },
+            onGenerateRoute: route_page.generateRoute,
           ),
         );
       },

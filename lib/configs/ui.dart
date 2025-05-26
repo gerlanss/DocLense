@@ -61,6 +61,17 @@ class UI {
   }
 
   static MediaQueryData mediaQuery() => _mediaQueryData!;
-
   static Size getSize() => _mediaQueryData!.size;
+}
+
+class Responsive {
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 600;
+      
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 600 && 
+      MediaQuery.of(context).size.width < 1200;
+      
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1200;
 }

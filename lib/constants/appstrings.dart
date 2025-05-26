@@ -104,10 +104,19 @@ class S {
   static final String camera = 'Camera';
 
   static final String documents = "Documents";
-
   static final String nameYourPdf = 'Name Your PDF';
 
   static final String pdfName = 'Pdf Name';
+  
+  static final String multiDelete = 'Multi Delete';
+  
+  static final String noImage = 'No Images Added';
+  
+  static final String remove = 'Remove';
+  
+  static final String confirmRemove = 'Confirm Remove';
+  
+  static final String exitConfirmText = 'Exit without saving changes?';
 
   // static final String a = '';
 

@@ -1,20 +1,24 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:doclense/configs/app_dimensions.dart';
 import 'package:doclense/configs/app_typography.dart';
 import 'package:doclense/configs/space.dart';
 import 'package:doclense/constants/appstrings.dart';
 import 'package:doclense/constants/route_constants.dart';
+import 'package:doclense/utils/share_util_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image/image.dart' as image_lib;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart';
-import 'package:photofilters/filters/preset_filters.dart';
+import 'package:image_editor_plus/image_editor_plus.dart' hide ImageCropper;
 import 'package:provider/provider.dart';
 
 import '../providers/image_list.dart';
 import '../providers/theme_provider.dart';
+
+enum IconOptions { share }
 
 class Imageview extends StatefulWidget {
   final File file;
@@ -34,7 +38,6 @@ class _ImageviewState extends State<Imageview> {
   bool _isLoading = true;
   List<File> files = [];
   int index = 0;
-
   @override
   void initState() {
     super.initState();
@@ -44,26 +47,37 @@ class _ImageviewState extends State<Imageview> {
         _isLoading = false;
       });
     });
-  }
-
+  }  
+  
   Future<void> cropimage(File file, Color appBarColor, Color bgColor) async {
     if (await file.exists()) {
-      cropped = await ImageCropper().cropImage(
-        sourcePath: file.path,
-        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 80,
-        uiSettings: [
-          AndroidUiSettings(
-            statusBarColor: appBarColor,
-            toolbarColor: appBarColor,
-            toolbarWidgetColor: Colors.white,
-            backgroundColor: bgColor,
-          ),
-        ],
-      );
-      setState(() {
-        // cropped == null ? file = files : file = cropped;
-        // files.add(file);
+      try {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: file.path,
+          cropStyle: CropStyle.rectangle,
+          compressQuality: 80,
+          uiSettings: [
+            AndroidUiSettings(
+              toolbarTitle: 'Recortar Imagem',
+              toolbarColor: appBarColor,
+              toolbarWidgetColor: Colors.white,
+              backgroundColor: bgColor,
+            ),
+          ],
+        );
+        
+        setState(() {
+          if (croppedFile != null) {
+            files.add(File(croppedFile.path));
+            index++;
+          }
+        });
+      } catch (e) {
+        print('Erro ao recortar imagem: $e');
+        // Fallback ao editor de imagem se o recorte falhar
+        await getFilterImage(context, appBarColor);
+      }
+        }
 
         if (cropped != null) {
           index++;
@@ -98,11 +112,16 @@ class _ImageviewState extends State<Imageview> {
   //       )
   //     ],
   //     onSelected: (IconOptions value) {
-  //       setState(() {});
+  //       setState(() {
+  //         if (value == IconOptions.share) {
+  //           if (files.isNotEmpty) {
+  //             ShareUtil.sharePdf(files[index].path, 'Compartilhar PDF');
+  //           }
+  //         }
+  //       });
   //     },
   //   );
   // }
-
   Future<void> getFilterImage(BuildContext context, Color appBarColor) async {
     File filterfile;
     if (files.isNotEmpty) {
@@ -111,34 +130,27 @@ class _ImageviewState extends State<Imageview> {
       filterfile = widget.file;
     }
 
-//    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final String fileName = basename(filterfile.path);
-    var image = image_lib.decodeImage(filterfile.readAsBytesSync());
-    image = image_lib.copyResize(image!, width: 600);
-    final Map? imagefile = await Navigator.of(context).pushNamed(
-      RouteConstants.photoFilterSelector,
-      arguments: {
-        'title': const Text("Apply Filter"),
-        'image': image,
-        'appBarColor': appBarColor,
-        'filters': presetFiltersList,
-        'fileName': fileName,
-        'loader': const Center(
-            child: CircularProgressIndicator(
-          backgroundColor: Colors.teal,
-          strokeWidth: 2,
-        )),
-        'fit': BoxFit.contain,
-      },
-    ) as Map;
-    if (imagefile != null && imagefile.containsKey('image_filtered')) {
-      setState(() {
-        // widget.file = imagefile['image_filtered'] as File;
-        files.add(imagefile['image_filtered'] as File);
+    // Usando o ImageEditor diretamente
+    final Uint8List? editedImage = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageEditor(
+          image: filterfile.readAsBytesSync(),
+          appBarColor: appBarColor,
+        ),
+      ),
+    );
 
+    if (editedImage != null) {
+      // Salvar a imagem editada
+      final editedFile = File(filterfile.path.replaceFirst('.jpg', '_edited.jpg'));
+      await editedFile.writeAsBytes(editedImage);
+
+      setState(() {
+        files.add(editedFile);
         index++;
       });
-      print(filterfile.path);
+      print(editedFile.path);
     }
   }
 

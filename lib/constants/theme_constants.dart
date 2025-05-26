@@ -12,9 +12,10 @@ TextStyle appbarStyle = AppText.b2b != null
 final darkTheme = ThemeData(
   primaryColor: Colors.black,
   brightness: Brightness.dark,
-  backgroundColor: const Color(0xFF212121),
+  scaffoldBackgroundColor: const Color(0xFF212121),
   colorScheme: const ColorScheme.dark(
     secondary: Colors.white,
+    surface: Color(0xFF212121),
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
       foregroundColor: Colors.black, backgroundColor: AppTheme.primaryColor),
@@ -37,9 +38,10 @@ final darkTheme = ThemeData(
 final lightTheme = ThemeData(
   primaryColor: AppTheme.primaryColor,
   brightness: Brightness.light,
-  backgroundColor: Colors.blueGrey[100],
+  scaffoldBackgroundColor: Colors.blueGrey[100],
   colorScheme: const ColorScheme.light(
     secondary: Colors.black,
+    surface: Colors.white,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
       foregroundColor: Colors.white, backgroundColor: Colors.blue[600]),
