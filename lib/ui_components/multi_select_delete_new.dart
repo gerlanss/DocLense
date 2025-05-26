@@ -98,20 +98,24 @@ class _MultiDeleteState extends State<MultiDelete> {
                             flex: 10,
                             child: Center(
                               child: Text(S.noImage, style: AppText.h3b),
-                            ),                          )
+                            ),
+                          )
                           : Expanded(
                             flex: 10,
                             child: GridView.builder(
                               itemCount: files.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 4.0,
-                                mainAxisSpacing: 4.0,
-                              ),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 4.0,
+                                    mainAxisSpacing: 4.0,
+                                  ),
                               itemBuilder: (context, index) {
                                 return GridItem(
                                   item: Item(files[index], index),
-                                  isSelected: (bool value) => _onSelectionChange(value, index),
+                                  isSelected:
+                                      (bool value) =>
+                                          _onSelectionChange(value, index),
                                 );
                               },
                             ),
