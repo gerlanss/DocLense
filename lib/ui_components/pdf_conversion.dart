@@ -88,11 +88,9 @@ class _PDFConversion extends State<PDFConversion> {
     print("PDFS : ${Hive.box('pdfs').getAt(0)}");
 
     // Clearing the image list once the PDF is created and saved
-    for (int i = 0; i < widget.list.imagelist.length; i++) {
-      print('i = $i');
-      widget.list.imagelist.removeAt(i);
-      widget.list.imagepath.removeAt(i);
-    }
+    // Limpando as listas de imagens para próxima conversão
+    widget.list.imagelist.clear();
+    widget.list.imagepath.clear();
   }
 
   @override
