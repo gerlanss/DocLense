@@ -8,7 +8,7 @@ import 'package:doclense/ui_components/main_drawer.dart';
 import 'package:doclense/providers/theme_provider.dart';
 import 'package:doclense/ui_components/double_back_to_close_snackbar.dart';
 import 'package:doclense/utils/image_converter.dart' as image_converter;
-import 'package:doclense/utils/share_util_new.dart';
+import 'package:doclense/utils/share_util.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
