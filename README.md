@@ -1,7 +1,7 @@
 ![DocLense](./readme_assets/doclense_banner.png)
 
 ![Issues](https://img.shields.io/github/issues/smaranjitghose/DocLense)
-![Pull Requests](https://img.shields.io/github/issues-pr/smaranjitghose/DocLense?)
+![Pull Requests](https://img.shields.io/github/issues-pr/smaranjitghose/DocLense)
 ![Forks](https://img.shields.io/github/forks/smaranjitghose/DocLense)
 ![Stars](https://img.shields.io/github/stars/smaranjitghose/DocLense)
 ![License](https://img.shields.io/github/license/smaranjitghose/DocLense)
