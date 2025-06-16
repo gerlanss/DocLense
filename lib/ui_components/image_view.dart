@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:doclense/configs/app_dimensions.dart';
 import 'package:doclense/configs/app_typography.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_editor_plus/image_editor_plus.dart' hide ImageCropper;
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 class Imageview extends StatefulWidget {

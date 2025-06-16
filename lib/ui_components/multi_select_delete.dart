@@ -7,7 +7,7 @@ import 'package:doclense/configs/ui.dart';
 import 'package:doclense/constants/appstrings.dart';
 import 'package:doclense/constants/route_constants.dart';
 import 'package:doclense/ui_components/grid_item.dart';
-import 'package:doclense/ui_components/multi_select_delete.dart';
+import 'package:doclense/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -46,8 +46,14 @@ class _MultiDeleteState extends State<MultiDelete> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onBackPress,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (await _onBackPress()) {
+          Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Center(child: Text(S.multiDelete, style: AppText.h4b)),

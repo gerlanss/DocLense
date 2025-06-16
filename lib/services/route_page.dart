@@ -13,7 +13,6 @@ import 'package:doclense/screens/settings/settings.dart';
 import 'package:doclense/screens/starred_documents.dart';
 import 'package:flutter/material.dart';
 // import 'package:folder_picker/folder_picker.dart';
-import 'package:image/image.dart' as image_lib;
 import 'package:image_editor_plus/image_editor_plus.dart';
 
 Route generateRoute(RouteSettings settings) {
@@ -48,7 +47,6 @@ Route generateRoute(RouteSettings settings) {
             final imageFile = File(args['fileName'] as String);
             return ImageEditor(
               image: imageFile.readAsBytesSync(),
-              appBarColor: args['appBarColor'] as Color,
               savePath: imageFile.path,
             );
           },
