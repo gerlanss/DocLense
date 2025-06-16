@@ -2,7 +2,7 @@ import 'package:doclense/configs/app_dimensions.dart';
 import 'package:doclense/configs/space.dart';
 import 'package:flutter/material.dart';
 
-import 'multi_select_delete.dart';
+import '../models/item.dart';
 
 class GridItem extends StatefulWidget {
   const GridItem({Key? key, required this.item, required this.isSelected})
