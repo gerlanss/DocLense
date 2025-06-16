@@ -5,7 +5,7 @@ import 'package:doclense/constants/appstrings.dart';
 import 'package:doclense/constants/assets.dart';
 import 'package:doclense/constants/route_constants.dart';
 import 'package:doclense/env.dart';
-import 'package:doclense/utils/share_util_new.dart';
+import 'package:doclense/utils/share_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';

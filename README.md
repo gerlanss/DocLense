@@ -43,6 +43,15 @@
 
 </div>
 
+## Development Setup
+
+Make sure Flutter is installed on your machine and run the following commands:
+
+```bash
+flutter pub get
+flutter run
+```
+
 ## Contribution Guidelines🏗
 
 Are we missing any of your favorite features, which you think you can add to it❓ We invite you to contribute to this project and make it better?

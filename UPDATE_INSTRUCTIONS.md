@@ -14,26 +14,14 @@ As dependências `gallery_saver` e `photofilters` foram substituídas por altern
 
 ## Como aplicar as mudanças
 
-### No Windows (PowerShell)
+### Atualização manual
 
-1. Substitua manualmente os arquivos da seguinte forma:
-   - Copie o conteúdo de `image_view_new.dart` para `image_view.dart`
-   - Copie o conteúdo de `multi_select_delete_new.dart` para `multi_select_delete.dart`
-
-2. Execute os seguintes comandos:
-   ```powershell
-   cd "G:\OneDrive\Documentos\GitHub\DocLense"
+1. Certifique-se de ter o Flutter instalado.
+2. Execute os comandos a seguir na raiz do projeto:
+   ```bash
    flutter clean
    flutter pub get
    flutter run
-   ```
-
-### No Linux/macOS
-
-1. Torne o script executável e execute-o:
-   ```bash
-   chmod +x update_libs.sh
-   ./update_libs.sh
    ```
 
 ## Observações

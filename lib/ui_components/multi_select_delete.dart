@@ -7,6 +7,7 @@ import 'package:doclense/configs/ui.dart';
 import 'package:doclense/constants/appstrings.dart';
 import 'package:doclense/constants/route_constants.dart';
 import 'package:doclense/ui_components/grid_item.dart';
+import 'package:doclense/ui_components/multi_select_delete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -24,322 +25,352 @@ class MultiDelete extends StatefulWidget {
 }
 
 class _MultiDeleteState extends State<MultiDelete> {
-  List<Item>? itemList;
-  List<Item>? selectedList;
-  File? imageFile;
-  final picker = ImagePicker();
-
   bool _isLoading = true;
+  List<File> files = [];
+  String? imageName;
+  File? file;
+  XFile? imageFile;
+  final picker = ImagePicker();
 
   @override
   void initState() {
-    loadList();
     super.initState();
-    Future.delayed(
-      const Duration(seconds: 1),
-      () => setState(() {
+    files = [...widget.imageList.imagelist];
+    print('IMAGELIST : ${widget.imageList.imagelist}');
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
         _isLoading = false;
-      }),
-    );
-  }
-
-  void loadList() {
-    itemList = [];
-    selectedList = [];
-    for (int i = 0; i < (widget.imageList.length()); i++) {
-      itemList?.add(Item(widget.imageList.imagelist.elementAt(i), i));
-    }
-  }
-
-  Future<void> _showChoiceDialogDel(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          title: Text(
-            S.deleteSelected,
-            textAlign: TextAlign.center,
-            style: AppText.b1!.cl(Colors.white),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      for (int i = 0; i < selectedList!.length; i++) {
-                        final int idx = widget.imageList.imagelist.indexOf(
-                          itemList![itemList!.indexOf(selectedList![i])]
-                              .imageUrl,
-                        );
-                        widget.imageList.imagelist.removeAt(idx);
-                        widget.imageList.imagepath.removeAt(idx);
-                        itemList!.remove(selectedList![i]);
-                      }
-                      selectedList = [];
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    S.yes,
-                    textAlign: TextAlign.center,
-                    style: AppText.b1!.cl(Colors.white),
-                  ),
-                ),
-                Space.y!,
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    S.no,
-                    textAlign: TextAlign.center,
-                    style: AppText.b1!.cl(Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _showChoiceDialogHome(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          title: Text(
-            S.deleteWarning,
-            textAlign: TextAlign.center,
-            style: AppText.b1!.cl(Colors.white),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    for (int i = 0; i < itemList!.length; i++) {
-                      print('i = $i');
-                      print(widget.imageList.imagelist.length);
-                      final int idx = widget.imageList.imagelist.indexOf(
-                        itemList![itemList!.indexOf(itemList![i])].imageUrl,
-                      );
-                      widget.imageList.imagelist.removeAt(idx);
-                      widget.imageList.imagepath.removeAt(idx);
-                      // itemList.remove(idx);
-                      itemList!.removeAt(idx);
-                    }
-
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  child: Text(
-                    S.yes,
-                    textAlign: TextAlign.center,
-                    style: AppText.b1!.cl(Colors.white),
-                  ),
-                ),
-                Space.y!,
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(
-                    S.no,
-                    textAlign: TextAlign.center,
-                    style: AppText.b1!.cl(Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _openGallery() async {
-    XFile? picture = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (picture != null) imageFile = File(picture.path);
+      });
     });
-    if (imageFile != null) {
-      Navigator.of(context).pushNamed(
-        RouteConstants.imageView,
-        arguments: {'imageFile': imageFile, 'imageList': widget.imageList},
-      );
-    }
-  }
-
-  Future<void> _openCamera() async {
-    XFile? picture = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (picture != null) imageFile = File(picture.path);
-    });
-    if (imageFile != null) {
-      ImageGallerySaver.saveFile(
-        imageFile!.path,
-      ).then((value) => print("Image Saved"));
-      Navigator.of(context).pushNamed(
-        RouteConstants.imageView,
-        arguments: {'imageFile': imageFile, 'imageList': widget.imageList},
-      );
-    }
-  }
-
-  Future<void> _showChoiceDialogAdd(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey[800],
-          title: Text(
-            S.addMorePages,
-            textAlign: TextAlign.center,
-            style: AppText.b1!.cl(Colors.white),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _openGallery();
-                  },
-                  child: Text(S.gallery, style: AppText.b1!.cl(Colors.white)),
-                ),
-                Space.y!,
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    _openCamera();
-                  },
-                  child: Text(S.camera, style: AppText.b1!.cl(Colors.white)),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (bool didPop, bool? result) {
-        if (!didPop && itemList!.isNotEmpty) {
-          setState(() {
-            widget.imageList.imagelist.removeAt(itemList!.length - 1);
-            widget.imageList.imagepath.removeAt(itemList!.length - 1);
-            itemList!.removeAt(itemList!.length - 1);
-          });
-        }
-      },
+    return WillPopScope(
+      onWillPop: _onBackPress,
       child: Scaffold(
-        // backgroundColor: Colors.blueGrey[100],
-        appBar: getAppBar(),
+        appBar: AppBar(
+          title: Center(child: Text(S.multiDelete, style: AppText.h4b)),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.refresh, size: AppDimensions.font(13)),
+              onPressed: () {
+                setState(() {});
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            _chooseDialog();
+          },
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                iconSize: 30,
+                icon: const Icon(Icons.camera_alt),
+                onPressed: () async {
+                  getImage(ImageSource.camera);
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              IconButton(
+                iconSize: 30,
+                icon: const Icon(Icons.image),
+                onPressed: () {
+                  getImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        ),
         body:
             _isLoading
                 ? const SpinKitRotatingCircle(color: Colors.blue)
-                : GridView.builder(
-                  itemCount: itemList!.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: UI.width! >= 640 ? 3 : 2,
-                    crossAxisSpacing: 4,
-                    mainAxisSpacing: 4,
-                  ),
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 10,
-                      child: GridItem(
-                        item: itemList![index],
-                        isSelected: (bool value) {
-                          setState(() {
-                            if (value) {
-                              selectedList!.add(itemList![index]);
-                            } else {
-                              selectedList!.remove(itemList![index]);
-                            }
-                          });
-                          print("$index : $value");
-                        },
-                        key: Key(itemList![index].rank.toString()),
+                : SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      files.isEmpty
+                          ? Expanded(
+                            flex: 10,
+                            child: Center(
+                              child: Text(S.noImage, style: AppText.h3b),
+                            ),
+                          )
+                          : Expanded(
+                            flex: 10,
+                            child: GridView.builder(
+                              itemCount: files.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 4.0,
+                                    mainAxisSpacing: 4.0,
+                                  ),
+                              itemBuilder: (context, index) {
+                                return GridItem(
+                                  item: Item(files[index], index),
+                                  isSelected:
+                                      (bool value) =>
+                                          _onSelectionChange(value, index),
+                                );
+                              },
+                            ),
+                          ),
+                      Expanded(
+                        child: Container(
+                          padding:
+                              Responsive.isMobile(context) ? Space.h : Space.h1,
+                          color: Colors.blue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                      size: AppDimensions.font(10),
+                                    ),
+                                    Text(
+                                      S.back,
+                                      style: AppText.l1!.cl(Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  _confirmDelete(context);
+                                },
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                      size: AppDimensions.font(10),
+                                    ),
+                                    Text(
+                                      S.remove,
+                                      style: AppText.l1!.cl(Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(
+                                    RouteConstants.pdfConversionScreen,
+                                    arguments: widget.imageList,
+                                  );
+                                },
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.picture_as_pdf,
+                                      color: Colors.white,
+                                      size: AppDimensions.font(10),
+                                    ),
+                                    Text(
+                                      S.save,
+                                      style: AppText.l1!.cl(Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: IconButton(
-            iconSize: AppDimensions.font(18),
-            onPressed: () {
-              _showChoiceDialogAdd(context);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ),
       ),
     );
   }
 
-  AppBar getAppBar() {
-    return AppBar(
-      leading: IconButton(
-        onPressed: () {
-          if (itemList!.isNotEmpty) {
-            setState(() {
-              widget.imageList.imagelist.removeAt(itemList!.length - 1);
-              widget.imageList.imagepath.removeAt(itemList!.length - 1);
-              itemList!.removeAt(itemList!.length - 1);
-            });
-          }
-          Navigator.of(context).pop();
-        },
-        icon: const Icon(Icons.arrow_back),
-      ),
-      title: Text(
-        selectedList!.isEmpty
-            ? S.documents
-            : "${selectedList!.length} item selected",
-      ),
-      actions: <Widget>[
-        if (selectedList!.isEmpty)
-          Container()
-        else
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              _showChoiceDialogDel(context);
-            },
+  void _onSelectionChange(bool isSelected, int index) {
+    setState(() {
+      if (index < 0 || index >= files.length) {
+        return;
+      }
+      print('INDEX : $index');
+      print('LENGTH : ${files.length}');
+      if (isSelected) {
+        widget.imageList.imagelist.removeAt(index);
+        files.removeAt(index);
+      }
+    });
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            backgroundColor: Colors.blueGrey[800],
+            title: Text(
+              S.confirmRemove,
+              textAlign: TextAlign.center,
+              style: AppText.b1!.cl(Colors.white),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        files.clear();
+                        widget.imageList.imagelist.clear();
+                        widget.imageList.imagepath.clear();
+                      });
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text(
+                      S.yes,
+                      textAlign: TextAlign.center,
+                      style: AppText.b1!.cl(Colors.white),
+                    ),
+                  ),
+                  Space.y!,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Text(
+                      S.no,
+                      textAlign: TextAlign.center,
+                      style: AppText.b1!.cl(Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        IconButton(
-          icon: const Icon(Icons.picture_as_pdf),
-          onPressed: () {
-            Navigator.of(context).pushNamed(
-              RouteConstants.pdfConversionScreen,
-              arguments: widget.imageList,
-            );
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.home),
-          onPressed: () {
-            _showChoiceDialogHome(context);
-          },
-        ),
-      ],
     );
   }
-}
 
-class Item {
-  File imageUrl;
-  int rank;
+  Future<void> getImage(ImageSource imageSource) async {
+    try {
+      imageFile = await picker.pickImage(source: imageSource);
+      if (imageFile == null) return;
+      file = File(imageFile!.path);
 
-  Item(this.imageUrl, this.rank);
+      if (imageSource == ImageSource.camera) {
+        ImageGallerySaver.saveFile(
+          imageFile!.path,
+        ).then((value) => print("Image Saved"));
+      }
+
+      setState(() {
+        files.add(file!);
+        widget.imageList.imagelist.add(file!);
+        widget.imageList.imagepath.add(file!.path);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool> _onBackPress() async {
+    if (files.isEmpty ||
+        (files.length == widget.imageList.imagelist.length &&
+            files.every(
+              (element) =>
+                  widget.imageList.imagelist.any((e) => e.path == element.path),
+            ))) {
+      return true;
+    }
+    return await showDialog(
+          context: context,
+          builder:
+              (ctx) => AlertDialog(
+                backgroundColor: Colors.blueGrey[800],
+                title: Text(
+                  S.exitConfirmText,
+                  textAlign: TextAlign.center,
+                  style: AppText.b1!.cl(Colors.white),
+                ),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            widget.imageList.imagelist = files;
+                            widget.imageList.imagepath =
+                                files.map((e) => e.path).toList();
+                          });
+                          Navigator.of(ctx).pop(true);
+                        },
+                        child: Text(
+                          S.yes,
+                          textAlign: TextAlign.center,
+                          style: AppText.b1!.cl(Colors.white),
+                        ),
+                      ),
+                      Space.y!,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(ctx).pop(false);
+                        },
+                        child: Text(
+                          S.no,
+                          textAlign: TextAlign.center,
+                          style: AppText.b1!.cl(Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+        )
+        as bool;
+  }
+
+  void _chooseDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text("Opções de Imagem"),
+          children: [
+            SimpleDialogOption(
+              onPressed: () {
+                getImage(ImageSource.camera);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Câmera"),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                getImage(ImageSource.gallery);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Galeria"),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancelar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
