@@ -8,16 +8,14 @@ class ShareUtil {
   static Future<void> sharePdf(String filePath, String subject) async {
     final file = File(filePath);
     if (await file.exists()) {
-      // Usando a nova API SharePlus.instance
-      await SharePlus.instance.share(
-        ShareParams(files: [XFile(filePath)], subject: subject),
-      );
+      // Usando a API correta do share_plus
+      await Share.shareXFiles([XFile(filePath)], subject: subject);
     }
   }
 
   /// Compartilha um texto com o assunto fornecido.
   static Future<void> shareText(String text, {String? subject}) async {
-    // Usando a nova API SharePlus.instance
-    await SharePlus.instance.share(ShareParams(text: text, subject: subject));
+    // Usando a API correta do share_plus
+    await Share.share(text, subject: subject);
   }
 }
